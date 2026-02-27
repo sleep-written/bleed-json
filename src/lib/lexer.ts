@@ -42,18 +42,14 @@ export class Lexer<C extends TokenizerConstructor<string>[]> {
     tokenize(source: string | Source): C extends TokenizerConstructor<infer T>[]
     ?   Token<T>[]
     :   never {
-        const realSource = typeof source === 'string'
-        ?   new Source(source)
-        :   source;
-
-        const scanner = new Scanner(realSource);
+        const scanner = new Scanner(source);
         const tokenizers = this.#constructors.map(c => ({
             type: c.type,
             tokenizer: new c()
         }));
 
         const injected: InjectedScanner = {
-            peek: (length: number) => realSource.sub(scanner.index, length),
+            peek: (length: number) => scanner.peek(length),
             peekIf: (v: string) => scanner.peekIf(v),
             peekWhile: (
                 callback: (char: string) => boolean,
@@ -76,7 +72,13 @@ export class Lexer<C extends TokenizerConstructor<string>[]> {
                     continue;
                 }
 
-                out.push({ ...range, type });
+                out.push({
+                    value:  range.value,
+                    type,
+                    from:   range.from,
+                    to:     range.to
+                });
+
                 scanner.move(length);
                 consumed = true;
                 break;
