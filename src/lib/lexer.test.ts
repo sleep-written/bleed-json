@@ -27,13 +27,13 @@ test('Basic Lexer', (t: test.TestContext) => {
             value:  'false',
             type:   'boolean',
             from:   { index: 0, line: 1, col: 1 },
-            to:     { index: 3, line: 1, col: 4 },
+            to:     { index: 5, line: 1, col: 6 },
         },
         {
             value:  '666',
             type:   'number',
-            from:   { index: 3, line: 1, col: 4 },
-            to:     { index: 6, line: 1, col: 7 },
+            from:   { index: 5, line: 1, col: 6 },
+            to:     { index: 8, line: 1, col: 9 },
         }
     ]);
 });
