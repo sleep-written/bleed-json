@@ -23,6 +23,27 @@ export class Scanner {
         :   source;
     }
 
+    peek(length: number): SourceRange {
+        if (!Number.isInteger(length)) {
+            length = Math.trunc(length);
+        }
+        
+        if (length >= 0) {
+            return this.#source.sub(this.#index, length);
+        } else {
+            const { value, from, to } = this.#source.sub(
+                this.#index + length,
+                Math.abs(length)
+            );
+
+            return {
+                value,
+                from: to,
+                to: from
+            };
+        }
+    }
+
     peekIf(v: string): SourceRange | undefined {
         let i = 0;
         let value = '';

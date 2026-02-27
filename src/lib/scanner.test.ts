@@ -1,6 +1,20 @@
 import { Scanner } from './scanner.ts';
 import test from 'node:test';
 
+test('Scanner.peek', (t: test.TestContext) => {
+    const scanner = new Scanner('666999');
+    scanner.move(4);
+
+    t.assert.deepStrictEqual(
+        scanner.peek(-2),
+        {
+            value:  '69',
+            from:   { index: 4, line: 1, col: 5 },
+            to:     { index: 2, line: 1, col: 3 }
+        }
+    );
+});
+
 test('Scanner.peekIf', (t: test.TestContext) => {
     const scanner = new Scanner('666999');
     t.assert.deepStrictEqual(

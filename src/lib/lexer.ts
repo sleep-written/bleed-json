@@ -1,4 +1,5 @@
-import type { Source, SourceRange } from './source.ts';
+import { Scanner } from './scanner.ts';
+import { Source, type SourceRange } from './source.ts';
 
 export interface InjectedScanner {
     peek(length: number): SourceRange;
@@ -41,6 +42,55 @@ export class Lexer<C extends TokenizerConstructor<string>[]> {
     tokenize(source: string | Source): C extends TokenizerConstructor<infer T>[]
     ?   Token<T>[]
     :   never {
-        throw new Error('Not implemented yet');
+        const scanner = new Scanner(source);
+        const tokenizers = this.#constructors.map(c => ({
+            type: c.type,
+            tokenizer: new c()
+        }));
+
+        const injected: InjectedScanner = {
+            peek: (length: number) => scanner.peek(length),
+            peekIf: (v: string) => scanner.peekIf(v),
+            peekWhile: (
+                callback: (char: string) => boolean,
+                validate?: (value: string) => boolean
+            ) => scanner.peekWhile(callback, validate)
+        };
+
+        const out: Token<string>[] = [];
+        while (!scanner.eof) {
+            let consumed = false;
+
+            for (const { type, tokenizer } of tokenizers) {
+                const range = tokenizer.test(injected);
+                if (!range) {
+                    continue;
+                }
+
+                const length = range.to.index - range.from.index;
+                if (length <= 0) {
+                    continue;
+                }
+
+                out.push({
+                    value:  range.value,
+                    type,
+                    from:   range.from,
+                    to:     range.to
+                });
+
+                scanner.move(length);
+                consumed = true;
+                break;
+            }
+
+            if (!consumed) {
+                throw new Error(`No tokenizer matched at index ${scanner.index}`);
+            }
+        }
+
+        return out as C extends TokenizerConstructor<infer T>[]
+        ?   Token<T>[]
+        :   never;
     }
 }
