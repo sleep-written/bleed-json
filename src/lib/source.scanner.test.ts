@@ -1,8 +1,8 @@
-import { Scanner } from './scanner.ts';
+import { SourceScanner } from './source.scanner.ts';
 import test from 'node:test';
 
 test('Scanner.peek', (t: test.TestContext) => {
-    const scanner = new Scanner('666999');
+    const scanner = new SourceScanner('666999');
     scanner.move(4);
 
     t.assert.deepStrictEqual(
@@ -16,7 +16,7 @@ test('Scanner.peek', (t: test.TestContext) => {
 });
 
 test('Scanner.peekIf', (t: test.TestContext) => {
-    const scanner = new Scanner('666999');
+    const scanner = new SourceScanner('666999');
     t.assert.deepStrictEqual(
         scanner.peekIf('666'),
         {
@@ -30,7 +30,7 @@ test('Scanner.peekIf', (t: test.TestContext) => {
 });
 
 test('Scanner.peekWhile', (t: test.TestContext) => {
-    const scanner = new Scanner('666hhh');
+    const scanner = new SourceScanner('666hhh');
     t.assert.deepStrictEqual(
         scanner.peekWhile(c => c >= '0' && c <= '9'),
         {
@@ -44,7 +44,7 @@ test('Scanner.peekWhile', (t: test.TestContext) => {
 });
 
 test('Scanner.peekWhile (with validation)', (t: test.TestContext) => {
-    const scanner = new Scanner('666hhh');
+    const scanner = new SourceScanner('666hhh');
     t.assert.deepStrictEqual(
         scanner.peekWhile(
             c => c >= '0' && c <= '9',
@@ -71,7 +71,7 @@ test('Scanner.peekWhile (with validation)', (t: test.TestContext) => {
 });
 
 test('Scanner.consume', (t: test.TestContext) => {
-    const scanner = new Scanner('666hhh');
+    const scanner = new SourceScanner('666hhh');
     t.assert.deepStrictEqual(
         scanner.consume(3),
         {

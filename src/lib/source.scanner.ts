@@ -1,7 +1,7 @@
 import type { SourceRange } from './source.ts';
 import { Source } from './source.ts';
 
-export class Scanner {
+export class SourceScanner {
     #source: Source;
 
     #index = 0;
@@ -89,7 +89,7 @@ export class Scanner {
         return undefined;
     }
 
-    move(length: number): Scanner {
+    move(length: number): SourceScanner {
         if (!Number.isInteger(length)) {
             length = !isNaN(length)
             ?   Math.trunc(length)

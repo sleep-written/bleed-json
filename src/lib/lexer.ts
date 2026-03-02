@@ -1,4 +1,4 @@
-import { Scanner } from './scanner.ts';
+import { SourceScanner } from './source.scanner.ts';
 import { Source, type SourceRange } from './source.ts';
 
 export interface InjectedScanner {
@@ -42,7 +42,7 @@ export class Lexer<C extends TokenizerConstructor<string>[]> {
     tokenize(source: string | Source): C extends TokenizerConstructor<infer T>[]
     ?   Token<T>[]
     :   never {
-        const scanner = new Scanner(source);
+        const scanner = new SourceScanner(source);
         const injected: InjectedScanner = {
             peek: (length: number) => scanner.peek(length),
             peekIf: (v: string) => scanner.peekIf(v),

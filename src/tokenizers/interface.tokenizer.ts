@@ -1,10 +1,10 @@
 import type { InjectedScanner, SourceRange, Tokenizer } from '@lib/index.ts';
 import { Lexer } from '@lib/index.ts';
 
-export const ParenthesisOpenTokenizer = Lexer.tokenizer('parenthesis-open', class implements Tokenizer {
+export const InterfaceTokenizer = Lexer.tokenizer('interface', class implements Tokenizer {
     test(s: InjectedScanner): SourceRange | undefined {
-        return s.peekIf('(');
+        return s.peekIf('interface');
     }
 });
 
-export default ParenthesisOpenTokenizer;
+export default InterfaceTokenizer;
