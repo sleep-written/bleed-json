@@ -2,12 +2,11 @@ import type { InjectedScanner, SourceRange, Tokenizer } from '@lib/index.ts';
 import { Lexer } from '@lib/index.ts';
 
 export const ExportDefaultTokenizer = Lexer.tokenizer('export-default', class implements Tokenizer {
-    #acum = '';
-
-    while(c: string): boolean {
-        this.#acum += c;
-        this.#acum = this.#acum.replace(/\s+/gi, ' ');
-        return 'export default'.startsWith(this.#acum);
+    while(acum: string, c: string): string | undefined {
+        const next = `${acum}${c}`.replace(/\s+/gi, ' ');
+        return 'export default'.startsWith(next)
+        ?   next
+        :   undefined;
     }
 
     validate(v: string): boolean {
@@ -15,10 +14,20 @@ export const ExportDefaultTokenizer = Lexer.tokenizer('export-default', class im
     }
 
     test(s: InjectedScanner): SourceRange | undefined {
+        let acum = '';
+
         return s.peekWhile(
-            c => this.while(c),
+            c => {
+                const next = this.while(acum, c);
+                if (!next) {
+                    return false;
+                }
+
+                acum = next;
+                return true;
+            },
             v => this.validate(v)
-        )
+        );
     }
 });
 
